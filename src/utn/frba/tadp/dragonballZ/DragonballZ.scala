@@ -2,8 +2,9 @@ package utn.frba.tadp.dragonballZ
 
 object DragonballZ {
 
+  type resultadoAtaque = (Guerrero,Guerrero);
   class NotMovimientosFoundException extends Exception
-  class Guerrero(val tipoGuerrero:TipoGuerrero,val items: List[Item],val estado: Estado,movimientos:List[Movimiento]){
+  class Guerrero(val items: List[Item],val estado: Estado,movimientos:List[Movimiento],ki: Int){
     def realizarMovimientoContra(defensor: Guerrero,movimiento:Movimiento): (Guerrero,Guerrero) ={
       movimiento.realizarMovimiento(this,defensor)
     }
@@ -25,11 +26,11 @@ object DragonballZ {
   sealed trait  TipoGuerrero{
 
   }
-  case class Humano() extends TipoGuerrero
-  case class Saiyajins() extends TipoGuerrero
-  case class Androides() extends TipoGuerrero
-  case class Namekuseins() extends TipoGuerrero
-  case class Monstruos() extends TipoGuerrero
+  case class Humano(override val items: List[Item],override val estado: Estado, val movimientos:List[Movimiento],ki:Int) extends Guerrero(items,estado,movimientos,ki)
+  case class Saiyajins(override val items: List[Item],override val estado :Estado,val movimientos:List[Movimiento],ki:Int,cola :Boolean) extends Guerrero(items,estado,movimientos,ki)
+  case class Androides(override val items: List[Item],override val estado :Estado,val movimientos:List[Movimiento],ki:Int) extends Guerrero(items,estado,movimientos,ki)
+  case class Namekuseins(override val items: List[Item],override val estado :Estado,val movimientos:List[Movimiento],ki:Int) extends Guerrero(items,estado,movimientos,ki)
+  case class Monstruos(override val items: List[Item],override val estado :Estado,val movimientos:List[Movimiento],ki:Int) extends Guerrero(items,estado,movimientos,ki)
 
 
 
