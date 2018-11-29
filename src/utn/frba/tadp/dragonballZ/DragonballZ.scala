@@ -42,8 +42,7 @@ object DragonballZ {
   }
   case object dejarseFajar extends Movimiento {
     override def realizarMovimiento(atacante: Guerrero, defensor: Guerrero): (Guerrero,Guerrero) = {
-      atacante.copy()
-      return (atacante,defensor)
+      return (atacante.copy(),defensor.copy())
     }
   }
   case object cargarKi extends Movimiento {
