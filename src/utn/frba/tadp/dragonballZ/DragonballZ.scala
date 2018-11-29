@@ -4,7 +4,7 @@ object DragonballZ {
 
   type resultadoAtaque = (Guerrero,Guerrero);
   class NotMovimientosFoundException extends Exception
-  class Guerrero(val items: List[Item],val estado: Estado,movimientos:List[Movimiento],ki: Int){
+  case class Guerrero(val items: List[Item],val estado: Estado,movimientos:List[Movimiento],val ki:Int){
     def realizarMovimientoContra(defensor: Guerrero,movimiento:Movimiento): (Guerrero,Guerrero) ={
       movimiento.realizarMovimiento(this,defensor)
     }
@@ -23,14 +23,17 @@ object DragonballZ {
   class Estado
   class Dormido extends Estado
   class Despierto extends Estado
+  class SuperSayajin(val nivel:Int) extends Estado{
+
+  }
   sealed trait  TipoGuerrero{
 
   }
-  case class Humano(override val items: List[Item],override val estado: Estado, val movimientos:List[Movimiento],ki:Int) extends Guerrero(items,estado,movimientos,ki)
-  case class Saiyajins(override val items: List[Item],override val estado :Estado,val movimientos:List[Movimiento],ki:Int,cola :Boolean) extends Guerrero(items,estado,movimientos,ki)
-  case class Androides(override val items: List[Item],override val estado :Estado,val movimientos:List[Movimiento],ki:Int) extends Guerrero(items,estado,movimientos,ki)
-  case class Namekuseins(override val items: List[Item],override val estado :Estado,val movimientos:List[Movimiento],ki:Int) extends Guerrero(items,estado,movimientos,ki)
-  case class Monstruos(override val items: List[Item],override val estado :Estado,val movimientos:List[Movimiento],ki:Int) extends Guerrero(items,estado,movimientos,ki)
+  case class Humano(override val items: List[Item],override val estado: Estado,override val movimientos:List[Movimiento],override val ki:Int) extends Guerrero(items,estado,movimientos,ki)
+  case class Saiyajins(override val items: List[Item],override val estado :Estado,override val movimientos:List[Movimiento],override val ki:Int,cola :Boolean) extends Guerrero(items,estado,movimientos,ki)
+  case class Androides(override val items: List[Item],override val estado :Estado,override val movimientos:List[Movimiento]) extends Guerrero(items,estado,movimientos,0)
+  case class Namekuseins(override val items: List[Item],override val estado :Estado,override val movimientos:List[Movimiento],override val ki:Int) extends Guerrero(items,estado,movimientos,ki)
+  case class Monstruos(override val items: List[Item],override val estado :Estado,override val movimientos:List[Movimiento],override  val ki:Int) extends Guerrero(items,estado,movimientos,ki)
 
 
 
@@ -38,10 +41,16 @@ object DragonballZ {
     def realizarMovimiento(atacante:Guerrero,defensor:Guerrero):(Guerrero,Guerrero)
   }
   case object dejarseFajar extends Movimiento {
-    override def realizarMovimiento(atacante: Guerrero, defensor: Guerrero): (Guerrero,Guerrero) = ???
+    override def realizarMovimiento(atacante: Guerrero, defensor: Guerrero): (Guerrero,Guerrero) = {
+      atacante.copy()
+      return (atacante,defensor)
+    }
   }
   case object cargarKi extends Movimiento {
-    override def realizarMovimiento(atacante: Guerrero, defensor: Guerrero): (Guerrero,Guerrero) = ???
+    override def realizarMovimiento(atacante: Guerrero, defensor: Guerrero): (Guerrero,Guerrero) = atacante.estado match {
+        case superSayajin: SuperSayajin => (atacante.copy(ki = atacante.ki+(150*superSayajin.nivel)),defensor.copy())
+        case whoa  => (atacante.copy(ki=atacante.ki+100),defensor.copy())
+    }
   }
 
   case class Arma() extends Item
@@ -49,7 +58,7 @@ object DragonballZ {
   class Filosa extends Arma
   class SemillaErmitanio extends Item
 
-  case class usarItem[A<:Item](val item:A) extends Movimiento {
+  case class usarItem(val item:Item) extends Movimiento {
     override def realizarMovimiento(atacante: Guerrero, defensor: Guerrero): (Guerrero,Guerrero) = ???
   }
 }
